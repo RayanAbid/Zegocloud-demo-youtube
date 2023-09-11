@@ -1,79 +1,73 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# ZegoCloud React Native SDK Video Call Demo
 
-# Getting Started
+This repository contains the code for implementing 1-on-1 video calls with invite using the ZegoCloud React Native SDK, as demonstrated in the YouTube video.
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+[Link to YouTube Video](https://www.youtube.com/@rayanabid)
 
-## Step 1: Start the Metro Server
+## Overview
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+In this project, we demonstrate how to integrate the ZegoCloud React Native SDK into your React Native application to enable real-time 1-on-1 video calls with invitation functionality. The ZegoCloud SDK provides powerful features for building interactive video applications, making it ideal for adding video call capabilities to your React Native app.
 
-To start Metro, run the following command from the _root_ of your React Native project:
+## Features
 
-```bash
-# using npm
-npm start
+- Initiate and accept 1-on-1 video calls.
+- Send and receive call invitations.
+- Real-time video and audio communication.
+- Customize the user interface for your application.
 
-# OR using Yarn
-yarn start
+## Prerequisites
+
+Before you get started, make sure you have the following prerequisites:
+
+- [Node.js](https://nodejs.org/) installed on your development machine.
+- [React Native](https://reactnative.dev/docs/environment-setup) development environment set up.
+- ZegoCloud SDK account and API credentials. You can obtain these by signing up on the ZegoCloud website.
+
+## Getting Started
+
+Follow these steps to get started with the project:
+
+1. Clone this repository to your local machine:
+
+``
+git clone https://github.com/RayanAbid/Zegocloud-demo-youtube
+``
+
+2. Install the project dependencies:
+
+```
+cd your-repo-name
+npm install
 ```
 
-## Step 2: Start your Application
+3. Configure the ZegoCloud SDK with your API credentials in the application code.
+4. Run the application on your desired platform (iOS/Android) using React Native CLI:
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-### For Android
-
-```bash
-# using npm
-npm run android
-
-# OR using Yarn
-yarn android
+```
+npx react-native run-ios
+```
+### or
+```
+npx react-native run-android
 ```
 
-### For iOS
+## Usage
 
-```bash
-# using npm
-npm run ios
+You can refer to the YouTube video for a detailed walkthrough of how to use the application and implement 1-on-1 video calls with invite using the ZegoCloud React Native SDK.
 
-# OR using Yarn
-yarn ios
-```
+## License
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+## Acknowledgments
 
-## Step 3: Modifying your App
+Special thanks to ZegoCloud for providing the React Native SDK and resources.
 
-Now that you have successfully run the app, let's modify it.
+## Contributing
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+Contributions are welcome! If you would like to contribute to this project, please follow the [Contribution Guidelines](CONTRIBUTING.md).
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+## Issues
 
-## Congratulations! :tada:
+If you encounter any issues or have suggestions for improvements, please [open an issue](https://github.com/RayanAbid/Zegocloud-demo-youtube/issues).
 
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
