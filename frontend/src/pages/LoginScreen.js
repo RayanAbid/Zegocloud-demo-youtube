@@ -1,6 +1,13 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useState, useEffect} from 'react';
-import {View, Text, Button, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  Button,
+  TouchableOpacity,
+  TextInput,
+  ScrollView,
+} from 'react-native';
 import KeyCenter from '../../KeyCenter';
 import {getFirstInstallTime} from 'react-native-device-info';
 
@@ -9,11 +16,14 @@ import ZegoUIKitPrebuiltCallService, {
   ZegoMenuBarButtonName,
 } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import {styles} from '../styles/MainStyles';
+import MyTextInput from '../components/MyTextInput';
 
 function LoginScreen(props) {
   const navigation = useNavigation();
   const [userID, setUserID] = useState('');
   const [userName, setUserName] = useState('');
+  const [number, setNumber] = useState('');
+  const [password, setPassword] = useState('');
 
   const loginHandler = () => {
     // Simulated login successful
@@ -87,19 +97,45 @@ function LoginScreen(props) {
 
   return (
     <View style={styles.container}>
-      <View style={{marginBottom: 30}}>
-        <Text style={styles.text}>appID: {KeyCenter.appID}</Text>
-        <Text style={styles.text}>userID: {userID}</Text>
-        <Text style={styles.text}>userName: {userName}</Text>
-      </View>
-      <View style={{width: 160}}>
-        <TouchableOpacity
-          style={styles.btnContainer}
-          onPress={() => {
-            loginHandler();
+      <View
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <View
+          style={{
+            marginBottom: 30,
           }}>
-          <Text style={styles.btnText}>Login</Text>
-        </TouchableOpacity>
+          {/* <Text style={styles.text}>appID: {KeyCenter.appID}</Text>
+        <Text style={styles.text}>userID: {userID}</Text>
+        <Text style={styles.text}>userName: {userName}</Text> */}
+
+          <MyTextInput
+            label={'Enter your Phone Number'}
+            placeholder={'Phone Number'}
+            value={number}
+            onChangeText={setNumber}
+            keyboardType={'numeric'}
+          />
+
+          <MyTextInput
+            label={'Enter your Password'}
+            placeholder={'Password'}
+            value={password}
+            secureTextEntry={true}
+            onChangeText={setPassword}
+          />
+        </View>
+
+        <View style={{width: 160}}>
+          <TouchableOpacity
+            style={styles.btnContainer}
+            onPress={() => {
+              loginHandler();
+            }}>
+            <Text style={styles.btnText}>Login</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );

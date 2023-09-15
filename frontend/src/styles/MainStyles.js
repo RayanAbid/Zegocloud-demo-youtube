@@ -7,6 +7,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'lightgray',
   },
+  userCard: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: 'white',
+    padding: 10,
+    marginBottom: 15,
+  },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
