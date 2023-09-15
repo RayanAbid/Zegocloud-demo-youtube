@@ -17,6 +17,7 @@
     "@zegocloud/react-native-callkeep": "^4.3.9",
     "@zegocloud/zego-uikit-prebuilt-call-rn": "^4.2.7",
     "@zegocloud/zego-uikit-rn": "^2.2.4",
+    "axios": "^1.5.0",
     "react": "18.2.0",
     "react-delegate-component": "^1.0.0",
     "react-native": "0.72.4",

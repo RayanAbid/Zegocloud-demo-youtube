@@ -10,6 +10,7 @@ import {
 } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import HomeScreen from './src/pages/HomeScreen';
 import LoginScreen from './src/pages/LoginScreen';
+import SplashScreen from './src/pages/SplashScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,8 +19,10 @@ export default function App() {
     <NavigationContainer>
       <ZegoCallInvitationDialog />
 
-      <Stack.Navigator initialRouteName="LoginScreen">
+      <Stack.Navigator initialRouteName="SplashScreen">
+        <Stack.Screen name="SplashScreen" component={SplashScreen} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
+
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
 
         <Stack.Screen

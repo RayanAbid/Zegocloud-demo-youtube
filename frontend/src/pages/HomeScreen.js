@@ -1,38 +1,25 @@
-import React, {useState, useRef, useEffect} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
-  Image,
-  FlatList,
-} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {useState, useEffect} from 'react';
+import {View, Text, Image, FlatList, TouchableOpacity} from 'react-native';
 
 import {ZegoSendCallInvitationButton} from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import {styles} from '../styles/MainStyles';
+import {clearAsyncStorage, getUserInfo, onUserLogin} from '../utils/functions';
+import axios from 'axios';
+import {URL} from '../utils/ApiUtils';
 
 function HomeScreen(props) {
   const [userID, setUserID] = useState('');
-  const [invitees, setInvitees] = useState([
-    {
-      userID: 'user1',
-      userName: 'user1',
-    },
-    {
-      userID: 'user2',
-      userName: 'user2',
-    },
-  ]);
-  const viewRef = useRef(null);
+  const [userName, setUserName] = useState('');
+  const [invitees, setInvitees] = useState([]);
 
   useEffect(() => {
     // Simulated auto login if there is login info cache
     getUserInfo().then(info => {
       if (info) {
         setUserID(info.userID);
+        console.log('testing info', info);
+        callGetAllUsers(info.access_token);
+        setUserName(info.userName);
         onUserLogin(info.userID, info.userName, props);
       } else {
         // Back to the login screen if not login before
@@ -41,23 +28,27 @@ function HomeScreen(props) {
     });
   }, []);
 
-  const getUserInfo = async () => {
-    try {
-      const userID = await AsyncStorage.getItem('userID');
-      const userName = await AsyncStorage.getItem('userName');
-      if (userID == undefined) {
-        return undefined;
-      } else {
-        return {userID, userName};
-      }
-    } catch (e) {
-      return undefined;
-    }
+  const callGetAllUsers = async accessToken => {
+    console.log('testing accessToken', accessToken);
+    let headersList = {
+      Accept: '*/*',
+      Authorization: `Bearer ${accessToken}`,
+    };
+
+    let reqOptions = {
+      url: `${URL}/get-users`,
+      method: 'GET',
+      headers: headersList,
+    };
+
+    let response = await axios.request(reqOptions);
+    console.log('testData', response.data);
+    setInvitees(response.data?.users);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Your user id: {userID}</Text>
+      <Text style={styles.heading}>Your user name: {userName}</Text>
 
       <FlatList
         style={{
@@ -82,7 +73,9 @@ function HomeScreen(props) {
                   }}
                 />
 
-                <Text>656757 Ray </Text>
+                <Text>
+                  {item?.name} - {item?.number}{' '}
+                </Text>
               </View>
 
               <View
@@ -93,7 +86,7 @@ function HomeScreen(props) {
                 }}>
                 <ZegoSendCallInvitationButton
                   invitees={invitees.map(inviteeID => {
-                    return {userID: inviteeID, userName: 'user_' + inviteeID};
+                    return {userID: item?._id, userName: 'user_' + item?._id};
                   })}
                   isVideoCall={false}
                 />
@@ -104,7 +97,7 @@ function HomeScreen(props) {
                 />
                 <ZegoSendCallInvitationButton
                   invitees={invitees.map(inviteeID => {
-                    return {userID: inviteeID, userName: 'user_' + inviteeID};
+                    return {userID: item?._id, userName: 'user_' + item?._id};
                   })}
                   isVideoCall={true}
                 />
@@ -114,15 +107,24 @@ function HomeScreen(props) {
         }}
         keyExtractor={item => item}
       />
-      {/* <View style={{width: 220, marginTop: 100}}>
-          <TouchableOpacity
-            style={styles.btnContainer}
-            onPress={() => {
-              props.navigation.navigate('LoginScreen');
-            }}>
-            <Text style={styles.btnText}>Back To Login Screen</Text>
-          </TouchableOpacity>
-        </View> */}
+      <View style={{width: 220, flex: 1}}>
+        <TouchableOpacity
+          style={[
+            styles.btnContainer,
+            {
+              backgroundColor: 'red',
+            },
+          ]}
+          onPress={() => {
+            clearAsyncStorage();
+            props.navigation.reset({
+              index: 0,
+              routes: [{name: 'LoginScreen'}],
+            });
+          }}>
+          <Text style={[styles.btnText, {}]}>Logout</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }

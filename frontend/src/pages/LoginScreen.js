@@ -8,92 +8,115 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native';
-import KeyCenter from '../../KeyCenter';
-import {getFirstInstallTime} from 'react-native-device-info';
 
-import * as ZIM from 'zego-zim-react-native';
-import ZegoUIKitPrebuiltCallService, {
-  ZegoMenuBarButtonName,
-} from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import {styles} from '../styles/MainStyles';
 import MyTextInput from '../components/MyTextInput';
+import {onUserLogin, storeUserInfo} from '../utils/functions';
+import axios from 'axios';
+import {URL} from '../utils/ApiUtils';
 
 function LoginScreen(props) {
   const navigation = useNavigation();
-  const [userID, setUserID] = useState('');
   const [userName, setUserName] = useState('');
-  const [number, setNumber] = useState('');
+  const [number, setNumber] = useState();
   const [password, setPassword] = useState('');
 
-  const loginHandler = () => {
+  const loginHandler = async () => {
+    // Simulated login successful
+    try {
+      console.log('loginHandler', parseInt(number), password, userName);
+      let headersList = {
+        Accept: '*/*',
+
+        'Content-Type': 'application/json',
+      };
+
+      let bodyContent = JSON.stringify({
+        number: parseInt(number),
+        password: password,
+        name: userName,
+      });
+
+      let reqOptions = {
+        url: `${URL}/login`,
+        method: 'POST',
+        headers: headersList,
+        data: bodyContent,
+      };
+
+      let response = await axios.request(reqOptions);
+      console.log(response.data);
+
+      if (response.data?.success) {
+        const userID = response.data?.user?._id;
+        const Name = response.data?.user?.name;
+        const access_token = response.data?.access_token;
+
+        console.log('userID yahoo', userID, 'Name', Name);
+        // Store user info to auto login
+        storeUserInfo({
+          userID,
+          Name,
+          access_token,
+        });
+
+        // Init the call service
+        onUserLogin(userID, Name, props).then(() => {
+          // Jump to HomeScreen to make new call
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'HomeScreen'}],
+          });
+        });
+      } else {
+        alert('User Already Exists');
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const signupHandler = async () => {
     // Simulated login successful
 
-    // Store user info to auto login
-    storeUserInfo({userID, userName});
+    let headersList = {
+      Accept: '*/*',
 
-    // Init the call service
-    onUserLogin(userID, userName, props).then(() => {
-      // Jump to HomeScreen to make new call
-      navigation.navigate('HomeScreen', {userID});
+      'Content-Type': 'application/json',
+    };
+
+    let bodyContent = JSON.stringify({
+      number: number,
+      password: password,
+      name: userName,
     });
-  };
 
-  const storeUserInfo = async info => {
-    await AsyncStorage.setItem('userID', info.userID);
-    await AsyncStorage.setItem('userName', info.userName);
-  };
+    let reqOptions = {
+      url: 'http://localhost:8080/registration/sign-up',
+      method: 'POST',
+      headers: headersList,
+      data: bodyContent,
+    };
 
-  const onUserLogin = async (userID, userName, props) => {
-    return ZegoUIKitPrebuiltCallService.init(
-      KeyCenter.appID,
-      KeyCenter.appSign,
-      userID,
-      userName,
-      [ZIM],
-      {
-        ringtoneConfig: {
-          incomingCallFileName: 'zego_incoming.mp3',
-          outgoingCallFileName: 'zego_outgoing.mp3',
-        },
-        requireConfig: data => {
-          return {
-            durationConfig: {
-              isVisible: true,
-              onDurationUpdate: duration => {
-                console.log(
-                  '########CallWithInvitation onDurationUpdate',
-                  duration,
-                );
-                if (duration === 10 * 60) {
-                  ZegoUIKitPrebuiltCallService.hangUp();
-                }
-              },
-            },
-            topMenuBarConfig: {
-              buttons: [ZegoMenuBarButtonName.minimizingButton],
-            },
-            onWindowMinimized: () => {
-              console.log('[Demo]CallInvitation onWindowMinimized');
-              props.navigation.navigate('HomeScreen');
-            },
-            onWindowMaximized: () => {
-              console.log('[Demo]CallInvitation onWindowMaximized');
-              props.navigation.navigate('ZegoUIKitPrebuiltCallInCallScreen');
-            },
-          };
-        },
-      },
-    );
-  };
+    let response = await axios.request(reqOptions);
+    console.log(response.data);
 
-  useEffect(() => {
-    getFirstInstallTime().then(firstInstallTime => {
-      const id = String(firstInstallTime).slice(-5);
-      setUserID(id);
-      const name = 'user_' + id;
-      setUserName(name);
-    });
-  }, []);
+    if (response.data?.success) {
+      const userID = response.data?.user?._id;
+      const Name = response.data?.user?.name;
+      const access_token = response.data?.access_token;
+      // Store user info to auto login
+      storeUserInfo({userID, Name, access_token});
+
+      // Init the call service
+      onUserLogin(userID, Name, props).then(() => {
+        // Jump to HomeScreen to make new call
+        navigation.navigate('HomeScreen', {userID});
+      });
+    } else {
+      alert('User Already Exists');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -106,10 +129,13 @@ function LoginScreen(props) {
           style={{
             marginBottom: 30,
           }}>
-          {/* <Text style={styles.text}>appID: {KeyCenter.appID}</Text>
-        <Text style={styles.text}>userID: {userID}</Text>
-        <Text style={styles.text}>userName: {userName}</Text> */}
-
+          <MyTextInput
+            label={'Enter your User name'}
+            placeholder={'User name'}
+            value={userName}
+            onChangeText={setUserName}
+            keyboardType={'numeric'}
+          />
           <MyTextInput
             label={'Enter your Phone Number'}
             placeholder={'Phone Number'}
@@ -134,6 +160,17 @@ function LoginScreen(props) {
               loginHandler();
             }}>
             <Text style={styles.btnText}>Login</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={{width: 160, marginTop: 20}}>
+          {/* go to signupscreen button */}
+          <TouchableOpacity
+            style={styles.btnContainer}
+            onPress={() => {
+              signupHandler();
+            }}>
+            <Text style={styles.btnText}>Signup</Text>
           </TouchableOpacity>
         </View>
       </View>
